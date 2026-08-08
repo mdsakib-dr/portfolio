@@ -1,0 +1,118 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[left=0.92cm,right=0.92cm,top=0.45cm,bottom=0.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{fontenc}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1B4FD8}
+\definecolor{darktext}{HTML}{0F172A}
+\definecolor{graytext}{HTML}{4B5563}
+\hypersetup{colorlinks=true, urlcolor=accent, pdftitle={Md Sakib — AI Automation Engineer}, pdfauthor={Md Sakib}}
+\setstretch{0.98}
+\titleformat{\section}{\bfseries\normalsize\color{darktext}}{}{0em}{}[\vspace{-2pt}\textcolor{accent}{\rule{\linewidth}{0.6pt}}]
+\titlespacing*{\section}{0pt}{2.6pt}{2pt}
+\setlist[itemize]{topsep=0pt, itemsep=0pt, parsep=0pt, leftmargin=1.2em, label=\textcolor{accent}{$\triangleright$}}
+\pagenumbering{gobble}
+% Consistent entry header: bold title left, gray italic date/link right
+\newcommand{\entryhead}[2]{%
+  \noindent\textbf{#1}\hfill{\small\color{graytext}\textit{#2}}%
+}
+% Sub-role / tech-stack line
+\newcommand{\entrysub}[1]{%
+  \noindent{\small\color{graytext}\textit{#1}}%
+}
+% Project category label
+\newcommand{\catlabel}[1]{%
+  \vspace{1.8pt}\noindent{\small\bfseries\color{accent}#1}\par\vspace{1pt}%
+}
+\begin{document}
+% ── HEADER ──────────────────────────────────────────────────────────────
+\begin{center}
+    {\LARGE \textbf{\color{darktext}Md Sakib}}\\[2pt]
+    {\small \textbf{\color{accent}AI Automation Engineer \ $\cdot$ \ Python \& FastAPI \ $\cdot$ \ MCP  \ $\cdot$ \ LLM \& RAG Systems \ $\cdot$ \ n8n }}\\[2.5pt]
+    {\small
+        \href{tel:+8801825264227}{+880 1825-264227} \ $|$ \
+        \href{mailto:mdsakibahmed848@gmail.com}{mdsakibahmed848@gmail.com} \ $|$ \
+        \href{https://github.com/mdsakib-dr}{github.com/mdsakib-dr} \ $|$ \
+        \href{https://linkedin.com/in/md-sakib-4b7910211/}{LinkedIn} \ $|$ \
+        Dhaka, Bangladesh \ $|$ \ Remote-Ready
+    }
+\end{center}
+\vspace{1pt}
+% ── SUMMARY ─────────────────────────────────────────────────────────────
+\section*{Professional Summary}
+{\small
+AI Automation Engineer who ships production systems, not just drag-and-drop flows. Builds full-stack AI platforms (FastAPI + Next.js), custom MCP servers exposing tools to LLM clients, RAG pipelines over pgvector, and end-to-end marketing automation on n8n. Strong in Python, REST/Graph API integration, PostgreSQL, webhooks, and LLM orchestration (OpenAI, Claude).
+}
+% ── TECHNICAL SKILLS ────────────────────────────────────────────────────
+\section*{Technical Skills}
+\begin{tabular}{@{}p{3.7cm} p{13.9cm}@{}}
+\small\textbf{Languages}            & \small Python \textbf{(primary)}, JavaScript/TypeScript, SQL \\[1.5pt]
+\small\textbf{Backend \& APIs}      & \small FastAPI, SQLAlchemy, REST APIs, Facebook Graph API, Webhooks, JWT auth, WebSockets \\[1.5pt]
+\small\textbf{AI / LLM}             & \small OpenAI, Claude, DeepSeek APIs, RAG, pgvector similarity search, embeddings, prompt engineering \\[1.5pt]
+\small\textbf{MCP Development}      & \small FastMCP, custom MCP servers \& tools, MCP deployment, Ahrefs API, GA4 data integration \\[1.5pt]
+\small\textbf{Automation}           & \small n8n (scheduled, event-driven, multi-step), webhook pipelines, error handling, retry/fallback \\[1.5pt]
+\small\textbf{Data \& Scraping}     & \small PostgreSQL + pgvector, Playwright, Google Sheets API, CSV/PDF/DOCX processing, Pandas \\[1.5pt]
+\small\textbf{Frontend \& DevOps}   & \small Next.js (App Router), React, Tailwind, Docker \& docker-compose, Git/GitHub, Postman \\
+\end{tabular}
+% ── EXPERIENCE ──────────────────────────────────────────────────────────
+\section*{Professional Experience}
+\entryhead{AKIJ iBOS \ \textemdash{} Dhaka, Bangladesh}{May 2026 -- Present}\\
+\entrysub{AI \& Automation Engineer (Intern)}
+\begin{itemize}
+    \item \small Contributed backend/automation and frontend to \textbf{\href{https://chanelsync.ibos.io/}{ChannelSync}} --- a unified omnichannel (voice + message) customer-support product: speech-to-speech, MCP-native, BYOK (any model), deployable on-prem for data residency and regulated teams.
+    \item \small Minimized manual workload across marketing and other teams by automating repetitive reporting, lead handling, and publishing end-to-end --- replacing hours of hand-done work with self-running pipelines.
+    \item \small Built Python + n8n automation connecting backend AI outputs to live enterprise systems via REST/Graph APIs, with error logging, output validation, and reusable integration components.
+\end{itemize}
+% ── PROJECTS ────────────────────────────────────────────────────────────
+\section*{Key Projects}
+\catlabel{Applications \& AI Systems}
+\entryhead{social\_bot \ \textemdash{} Multi-Tenant AI Customer-Support Platform}{\href{https://social-bot-tan.vercel.app/}{Live} \ $\cdot$ \ \href{https://github.com/mdsakib-dr/social_bot}{GitHub}}\\
+\entrysub{FastAPI \ $\cdot$ \ Next.js 15 / React 19 \ $\cdot$ \ PostgreSQL + pgvector \ $\cdot$ \ OpenAI \ $\cdot$ \ WebSocket \ $\cdot$ \ Docker}
+\begin{itemize}
+    \item \small Built a standalone multi-tenant Facebook Messenger support platform: businesses connect Pages, messages stream into a real-time WebSocket inbox, and per-page AI agents auto-reply with human-takeover.
+    \item \small Engineered a RAG pipeline (PDF/DOCX/TXT ingestion, chunking, embeddings, pgvector cosine retrieval) for grounded answers; own JWT auth, Fernet-encrypted page tokens, and HMAC-verified webhooks.
+\end{itemize}
+\vspace{2pt}
+\entryhead{Leads Scraper \ \textemdash{} Sheet-Triggered Google Maps Lead Engine}{\href{https://github.com/mdsakib-dr/leads-scrapper}{GitHub}}\\
+\entrysub{FastAPI \ $\cdot$ \ Playwright \ $\cdot$ \ PostgreSQL \ $\cdot$ \ Google Sheets API \ $\cdot$ \ async concurrency}
+\begin{itemize}
+  \item \small Built a FastAPI service that polls a Google Sheet, scrapes Google Maps, and enriches emails/socials from business sites, persisting each lead on finalize (crash-safe).
+    \item \small Enforced DB-level dedup via a UNIQUE key (domain $\to$ phone $\to$ name+address) with re-scrape field merging.
+\end{itemize}
+\catlabel{MCP Servers (LLM Tooling)}
+\entryhead{WordPress MCP Server}{\href{https://wordpress-mcp.fastmcp.app/mcp}{Live Endpoint} \ $\cdot$ \ \href{https://github.com/mdsakib-dr/wordpress-mcp}{GitHub}}\\
+\entrysub{FastMCP \ $\cdot$ \ WordPress REST API \ $\cdot$ \ Application-Password auth \ $\cdot$ \ Prefect Horizon deploy}
+\begin{itemize}
+    \item \small Built a remote MCP server exposing draft / publish / update / search tools that let any MCP client (incl. Claude) manage a self-hosted WordPress site --- no plugins, authenticated via Application Passwords.
+\end{itemize}
+\vspace{2pt}
+\entryhead{SEO MCP Server}{\href{https://seo-mcp.fastmcp.app/mcp}{Live Endpoint} \ $\cdot$ \ \href{https://github.com/mdsakib-dr/seo-mcp}{GitHub}}\\
+\entrysub{FastMCP \ $\cdot$ \ Ahrefs API \ $\cdot$ \ GA4 \ $\cdot$ \ Prefect Horizon deploy}
+\begin{itemize}
+    \item \small Built an MCP server that collects GA4 analytics and Ahrefs SEO data (via Ahrefs API key) and exposes it as callable tools --- giving LLM clients on-demand access to live traffic and SEO metrics.
+\end{itemize}
+\catlabel{Marketing Automation (n8n)}
+\entryhead{Meta Ads Lead-Capture Automation \ \textemdash{} All Company Pages}{n8n \ $\cdot$ \ Graph API \ $\cdot$ \ Google Sheets \ $\cdot$ \ CRM}
+\begin{itemize}
+    \item \small Built webhook-driven lead capture across all Meta (Facebook/Instagram) lead-gen pages: verifies Meta's handshake, ACKs instantly, fetches lead data from the Graph API, normalizes to Dhaka time, dedups, and lands each lead into Google Sheets and the internal CRM with retry/fallback.
+\end{itemize}
+\vspace{2pt}
+\entryhead{AI-Powered Daily Ads Reporting Digest}{n8n \ $\cdot$ \ Meta Ads API \ $\cdot$ \ Google Ads API \ $\cdot$ \ LLM-DeepSeek \ $\cdot$ \ Gmail API}
+\begin{itemize}
+    \item \small Automated a scheduled Meta + Google Ads digest fetching live spend/CPL/CPA, running DeepSeek analysis with strict anomaly thresholds, and auto-emailing an executive summary --- guarded by a hallucination check flagging runs with no live tool data.
+\end{itemize}
+% ── EDUCATION + ACHIEVEMENTS ────────────────────────────────────────────
+\section*{Education \& Achievements}
+\entryhead{ZNRF University of Management Sciences, Dhaka}{Jul 2022 -- Jul 2026}\\
+{\small B.Eng. in Computer Science \& Engineering \ $|$ \ Top 5\% of batch \ $|$ \ ZNRF Trust Scholarship recipient}
+\vspace{1.5pt}
+\noindent{\small
+\textbf{ICPC Dhaka Regional 2023} --- Rank 147 among 300+ teams \ $|$ \
+\textbf{General Secretary}, ZUMS Student Forum (2025) \ $|$ \
+\textbf{Executive Member}, BASIS Student Forum
+}
+\end{document}
