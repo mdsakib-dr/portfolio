@@ -139,18 +139,57 @@ a {
   transition: opacity 0.25s ease;
 }
 
-/* Touch has no hoverable cursor, so a finger trail needs a slightly heavier line
-   to read clearly; the component drives the same trail from pointer events. */
-@media (pointer: coarse) {
-  .cursor-trail {
-    stroke-width: 3.5;
+/* The user asked for less motion — the component also skips its loop here. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-trail,
+  .touch-ripples {
+    display: none;
   }
 }
 
-/* The user asked for less motion — the component also skips its loop here. */
-@media (prefers-reduced-motion: reduce) {
-  .cursor-trail {
-    display: none;
+/* ─────────────────────────────────────────────────────────────
+   Touch water ripple — components/CursorTrail.jsx (coarse pointer only)
+   ───────────────────────────────────────────────────────────── */
+
+/* Same fixed, inert overlay as the trail: sits above the nav, never blocks a
+   tap, and clips ripples so they never extend the page. */
+.touch-ripples {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* A ring centered on the touch point that expands and fades out. The base size
+   is tiny; the keyframes scale it up so only transform animates (no layout). */
+.touch-ripple {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  transform: scale(0);
+  opacity: 0;
+  animation: touch-ripple 0.85s ease-out forwards;
+}
+
+/* The lagging second ring that sells the "water" effect. */
+.touch-ripple--outer {
+  border-width: 1.5px;
+  animation-duration: 1.15s;
+  animation-delay: 0.08s;
+}
+
+@keyframes touch-ripple {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(16);
+    opacity: 0;
   }
 }
 

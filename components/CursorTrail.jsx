@@ -3,20 +3,18 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A line that trails the cursor, in the theme accent.
+ * Pointer decoration that adapts to the input type:
  *
- * Built as a chain rather than a recording of raw pointer samples: node 0 eases
- * toward the pointer, and every node after it eases toward the node ahead of it.
- * That is what turns jittery mousemove events into one smooth line that whips and
- * settles — and it means a stalled pointer collapses the chain to a point, so the
- * trail only shows while you are actually moving.
+ * - Fine pointer (mouse): a line trails the cursor, built as an eased chain so
+ *   jittery mousemove events become one smooth line. Segment geometry is written
+ *   straight to attributes each frame rather than through React state.
  *
- * Segment geometry is written straight to attributes each frame instead of through
- * React state; re-rendering 24 elements at 60fps through the reconciler would be
- * pointless work. Opacity per segment is static and set once at render.
+ * - Coarse pointer (touch): there is no persistent cursor, so a trail is
+ *   pointless — instead each tap drops a water-style ripple that expands and
+ *   fades from the touch point.
  *
- * Decorative and inert: aria-hidden, pointer-events: none, and it opts out
- * entirely for reduced-motion users and on touch devices (see globals.css).
+ * Both are decorative and inert (aria-hidden, pointer-events: none) and opt out
+ * entirely for reduced-motion users.
  */
 
 const SEGMENTS = 24; // chained segments in the tail
@@ -25,22 +23,15 @@ const MAX_OPACITY = 0.9; // opacity of the segment nearest the cursor
 
 export default function CursorTrail() {
   const svgRef = useRef(null);
+  const ripplesRef = useRef(null);
 
+  // ── Mouse trail (fine pointer only) ────────────────────────────────────
   useEffect(() => {
-    // Pure decoration, so reduced-motion means don't run the loop at all.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
 
     const svg = svgRef.current;
     if (!svg) return;
-
-    // Mouse trails the cursor persistently; touch trails the finger only while
-    // it is on the screen. Both use the same pointer events, so a device with
-    // both (touch laptop) keeps the mouse behaviour.
-    const hasFine = window.matchMedia("(pointer: fine)").matches;
-    const hasCoarse = window.matchMedia("(pointer: coarse)").matches;
-    if (!hasFine && !hasCoarse) return;
 
     const lines = Array.from(svg.children);
     const xs = new Array(SEGMENTS + 1).fill(-100);
@@ -70,13 +61,8 @@ export default function CursorTrail() {
       collapse();
       active = true;
     };
-    const onUp = () => {
-      // Touch has no persistent pointer — fade as soon as the finger lifts.
-      if (hasCoarse && !hasFine) active = false;
-    };
     const onLeave = () => {
-      // Mouse left the window — fade until it comes back.
-      if (hasFine) active = false;
+      active = false;
     };
 
     const tick = () => {
@@ -101,8 +87,6 @@ export default function CursorTrail() {
 
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
     document.addEventListener("pointerleave", onLeave);
     frame = requestAnimationFrame(tick);
 
@@ -110,17 +94,63 @@ export default function CursorTrail() {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
       document.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
+  // ── Touch water ripple (coarse pointer only) ───────────────────────────
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Only on pure-touch devices; touch laptops keep the mouse trail.
+    if (
+      window.matchMedia("(pointer: fine)").matches ||
+      !window.matchMedia("(pointer: coarse)").matches
+    ) {
+      return;
+    }
+
+    const container = ripplesRef.current;
+    if (!container) return;
+
+    const spawn = (x, y) => {
+      // Two rings give the "water" feel: a fast inner ring and a lagging outer one.
+      const inner = document.createElement("span");
+      inner.className = "touch-ripple";
+      inner.style.left = `${x}px`;
+      inner.style.top = `${y}px`;
+      container.appendChild(inner);
+
+      const outer = document.createElement("span");
+      outer.className = "touch-ripple touch-ripple--outer";
+      outer.style.left = `${x}px`;
+      outer.style.top = `${y}px`;
+      container.appendChild(outer);
+
+      const clean = () => {
+        inner.remove();
+        outer.remove();
+      };
+      inner.addEventListener("animationend", clean);
+      setTimeout(clean, 1300);
+    };
+
+    const onDown = (e) => {
+      if (e.pointerType !== "touch") return;
+      spawn(e.clientX, e.clientY);
+    };
+
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    return () => window.removeEventListener("pointerdown", onDown);
+  }, []);
+
   return (
-    <svg ref={svgRef} className="cursor-trail" aria-hidden="true" focusable="false">
-      {Array.from({ length: SEGMENTS }, (_, i) => (
-        <line key={i} strokeOpacity={((1 - i / SEGMENTS) * MAX_OPACITY).toFixed(3)} />
-      ))}
-    </svg>
+    <>
+      <svg ref={svgRef} className="cursor-trail" aria-hidden="true" focusable="false">
+        {Array.from({ length: SEGMENTS }, (_, i) => (
+          <line key={i} strokeOpacity={((1 - i / SEGMENTS) * MAX_OPACITY).toFixed(3)} />
+        ))}
+      </svg>
+      <div ref={ripplesRef} className="touch-ripples" aria-hidden="true" />
+    </>
   );
 }
