@@ -139,14 +139,15 @@ a {
   transition: opacity 0.25s ease;
 }
 
-/* No pointer to trail, or the user asked for less motion — the component also
-   skips its animation loop in these cases, this is the belt to that braces. */
+/* Touch has no hoverable cursor, so a finger trail needs a slightly heavier line
+   to read clearly; the component drives the same trail from pointer events. */
 @media (pointer: coarse) {
   .cursor-trail {
-    display: none;
+    stroke-width: 3.5;
   }
 }
 
+/* The user asked for less motion — the component also skips its loop here. */
 @media (prefers-reduced-motion: reduce) {
   .cursor-trail {
     display: none;

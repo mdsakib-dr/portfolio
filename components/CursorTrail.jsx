@@ -27,17 +27,20 @@ export default function CursorTrail() {
   const svgRef = useRef(null);
 
   useEffect(() => {
-    // No persistent pointer to trail on touch, and this is pure decoration, so
-    // reduced-motion means don't run the loop at all — not just hide it.
-    if (
-      !window.matchMedia("(pointer: fine)").matches ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    // Pure decoration, so reduced-motion means don't run the loop at all.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const svg = svgRef.current;
     if (!svg) return;
+
+    // Mouse trails the cursor persistently; touch trails the finger only while
+    // it is on the screen. Both use the same pointer events, so a device with
+    // both (touch laptop) keeps the mouse behaviour.
+    const hasFine = window.matchMedia("(pointer: fine)").matches;
+    const hasCoarse = window.matchMedia("(pointer: coarse)").matches;
+    if (!hasFine && !hasCoarse) return;
 
     const lines = Array.from(svg.children);
     const xs = new Array(SEGMENTS + 1).fill(-100);
@@ -47,18 +50,33 @@ export default function CursorTrail() {
     let active = false;
     let frame = 0;
 
+    const collapse = () => {
+      // Drop the chain onto the pointer first, or it whips in from the last spot.
+      xs.fill(pointerX);
+      ys.fill(pointerY);
+    };
+
     const onMove = (e) => {
       pointerX = e.clientX;
       pointerY = e.clientY;
       if (!active) {
-        // Collapse the chain onto the cursor first, or it whips in from 0,0.
-        xs.fill(pointerX);
-        ys.fill(pointerY);
+        collapse();
         active = true;
       }
     };
+    const onDown = (e) => {
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      collapse();
+      active = true;
+    };
+    const onUp = () => {
+      // Touch has no persistent pointer — fade as soon as the finger lifts.
+      if (hasCoarse && !hasFine) active = false;
+    };
     const onLeave = () => {
-      active = false;
+      // Mouse left the window — fade until it comes back.
+      if (hasFine) active = false;
     };
 
     const tick = () => {
@@ -82,12 +100,18 @@ export default function CursorTrail() {
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     document.addEventListener("pointerleave", onLeave);
     frame = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       document.removeEventListener("pointerleave", onLeave);
     };
   }, []);
