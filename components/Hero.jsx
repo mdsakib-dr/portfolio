@@ -59,15 +59,14 @@ export default function Hero() {
                   See the work
                 </a>
                 <a
-                  href={profile.resumeFile}
-                  download={profile.resumeDownloadName}
-                  className="rounded-full border border-line px-5 py-2.5 text-sm font-600 text-text transition-colors hover:border-text"
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-600 text-muted transition-colors hover:text-text"
                 >
-                  Download résumé
+                  <BrandIcon icon={getBrandIcon("GitHub")} size={15} />
+                  GitHub ↗
                 </a>
-                {/* LinkedIn rather than GitHub here — GitHub already has a slot
-                    in the Contact section, and the two Work cards link straight
-                    to their repos. */}
                 <a
                   href={profile.linkedin}
                   target="_blank"
@@ -93,21 +92,31 @@ export default function Hero() {
             style={{ background: "var(--line)" }}
           >
             {stats.map((s) => (
-              <div key={s.label} className="bg-surface p-4">
-                <div
-                  className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-display text-lg font-700"
-                  style={{ color: "var(--accent)" }}
-                >
-                  {s.brands
-                    ? s.brands.map((b) => (
-                        <span key={b} className="inline-flex items-center gap-1.5 text-base">
-                          <BrandIcon icon={getBrandIcon(b)} size={14} />
-                          {b}
+              <div key={s.label} className="bg-surface p-4 sm:p-5">
+                {s.brands ? (
+                  <div className="flex h-7 items-center gap-2">
+                    {s.brands.map((b) => {
+                      const icon = getBrandIcon(b);
+                      return (
+                        <span
+                          key={b}
+                          title={icon?.title || b}
+                          className="inline-flex items-center"
+                        >
+                          <BrandIcon icon={icon} size={20} />
                         </span>
-                      ))
-                    : s.value}
-                </div>
-                <div className="mt-1 text-xs leading-snug text-muted">{s.label}</div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div
+                    className="font-display text-2xl font-700 leading-none"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {s.value}
+                  </div>
+                )}
+                <div className="mt-2 text-xs leading-snug text-muted">{s.label}</div>
               </div>
             ))}
           </motion.div>

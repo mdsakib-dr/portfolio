@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { profile, experience, education } from "@/lib/data";
+import { profile, experience, education, activities } from "@/lib/data";
 import SectionHead from "./SectionHead";
 
 export default function About() {
@@ -66,16 +66,25 @@ export default function About() {
 
           <div className="rounded-2xl border border-line bg-surface p-5">
             <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-muted term-prompt">
-              Achievements
+              Activities
             </h3>
-            <ul className="mt-3 space-y-2">
-              {education.achievements.map((a) => (
-                <li key={a} className="flex gap-2 text-sm leading-relaxed text-muted">
-                  <span style={{ color: "var(--accent)" }}>▹</span>
-                  <span>{a}</span>
-                </li>
+            <div className="mt-4 space-y-5">
+              {activities.map((group) => (
+                <div key={group.group}>
+                  <h4 className="text-sm font-600" style={{ color: "var(--accent)" }}>
+                    {group.group}
+                  </h4>
+                  <ul className="mt-2 space-y-1.5">
+                    {group.items.map((a) => (
+                      <li key={a} className="flex gap-2 text-sm leading-relaxed text-muted">
+                        <span style={{ color: "var(--accent)" }}>▹</span>
+                        <span>{a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </div>
