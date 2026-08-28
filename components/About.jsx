@@ -31,19 +31,28 @@ export default function About() {
               <div key={e.company} className="rounded-2xl border border-line bg-surface p-5">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h3 className="font-display text-base font-700">{e.company}</h3>
-                  <span className="font-mono text-xs text-muted">{e.period}</span>
+                  <span className="font-mono text-xs text-muted">{e.location}</span>
                 </div>
-                <p className="mt-0.5 text-sm" style={{ color: "var(--accent)" }}>
-                  {e.role}
-                </p>
-                <ul className="mt-3 space-y-2">
-                  {e.points.map((pt, i) => (
-                    <li key={i} className="flex gap-2 text-sm leading-relaxed text-muted">
-                      <span style={{ color: "var(--accent)" }}>▹</span>
-                      <span>{pt}</span>
-                    </li>
+                <div className="mt-3 space-y-4">
+                  {e.positions.map((p, i) => (
+                    <div key={p.role} className={i > 0 ? "border-t border-line pt-4" : ""}>
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <p className="text-sm font-600" style={{ color: "var(--accent)" }}>
+                          {p.role}
+                        </p>
+                        <span className="font-mono text-xs text-muted">{p.period}</span>
+                      </div>
+                      <ul className="mt-2 space-y-2">
+                        {p.points.map((pt, i) => (
+                          <li key={i} className="flex gap-2 text-sm leading-relaxed text-muted">
+                            <span style={{ color: "var(--accent)" }}>▹</span>
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
