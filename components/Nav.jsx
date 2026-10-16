@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { profile } from "@/lib/data";
 
 // Root-relative hashes so the same nav works on the homepage and on
 // case-study subpages (/work/<id>).
@@ -75,13 +74,6 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <a
-            href={profile.resumeFile}
-            download={profile.resumeDownloadName}
-            className="hidden rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:text-text sm:inline-block"
-          >
-            Résumé ↓
-          </a>
           <ThemeSwitcher />
 
           <button
@@ -141,17 +133,6 @@ export default function Nav() {
                 </a>
               </li>
             ))}
-            <li>
-              <a
-                href={profile.resumeFile}
-                download={profile.resumeDownloadName}
-                onClick={() => setOpen(false)}
-                className="block py-3 text-sm font-600"
-                style={{ color: "var(--accent)" }}
-              >
-                Download résumé ↓
-              </a>
-            </li>
           </ul>
         </div>
       )}
