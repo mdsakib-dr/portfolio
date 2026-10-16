@@ -120,108 +120,202 @@ export default function CaseStudy({ study }) {
         </div>
       </section>
 
-      {/* Problem + role */}
+      {/* Problem, with an optional role card beside it */}
       <section className="mx-auto max-w-content px-5 py-16">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+        {study.myRole ? (
+          <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+            <div>
+              <SectionHead eyebrow="The problem" title={study.problemTitle || "The problem."} />
+              <motion.p {...rise} className="text-[15px] leading-relaxed text-muted">
+                {study.problem}
+              </motion.p>
+            </div>
+            <motion.div {...rise} className="rounded-2xl border border-line bg-surface p-5">
+              <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-muted term-prompt">My role</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted">{study.myRole}</p>
+            </motion.div>
+          </div>
+        ) : (
           <div>
-            <SectionHead eyebrow="The problem" title="Hands-on content doesn't scale. Naive automation doesn't either." />
-            <motion.p {...rise} className="text-[15px] leading-relaxed text-muted">
+            <SectionHead eyebrow="Problem" title={study.problemTitle || "The problem."} />
+            <motion.p {...rise} className="max-w-3xl text-[15px] leading-relaxed text-muted">
               {study.problem}
             </motion.p>
           </div>
-          <motion.div {...rise} className="rounded-2xl border border-line bg-surface p-5">
-            <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-muted term-prompt">My role</h3>
-            <p className="mt-3 text-sm leading-relaxed text-muted">{study.role}</p>
-          </motion.div>
-        </div>
+        )}
       </section>
+
+      {/* Solution */}
+      {study.solution && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="Solution" title="How it works." />
+          <motion.p {...rise} className="max-w-3xl text-[15px] leading-relaxed text-muted">
+            {study.solution}
+          </motion.p>
+        </section>
+      )}
 
       {/* What it does */}
-      <section className="mx-auto max-w-content px-5 py-16">
-        <SectionHead eyebrow="What it does" title="An orchestration, safety, retrieval and data-integrity story." />
-        <div className="grid gap-5 md:grid-cols-2">
-          {study.highlights.map((item, i) => (
-            <Highlight key={item.title} item={item} index={i} />
-          ))}
-        </div>
-      </section>
+      {study.highlights && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="What it does" title="An orchestration, safety, retrieval and data-integrity story." />
+          <div className="grid gap-5 md:grid-cols-2">
+            {study.highlights.map((item, i) => (
+              <Highlight key={item.title} item={item} index={i} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Architecture */}
-      <section className="mx-auto max-w-content px-5 py-16">
-        <SectionHead eyebrow="Architecture" title="One governed pipeline, one non-bypassable gate." />
+      {study.architecture && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="Architecture" title="One governed pipeline, one non-bypassable gate." />
 
-        <motion.ol {...rise} className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-3">
-          {study.pipeline.map((step, i) => (
-            <li key={step} className="flex items-center gap-2">
-              <span className="rounded-md border border-line px-2.5 py-1 font-mono text-xs text-muted">
-                {step}
-              </span>
-              {i < study.pipeline.length - 1 && (
-                <span aria-hidden="true" style={{ color: "var(--accent)" }}>
-                  →
+          <motion.ol {...rise} className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-3">
+            {study.pipeline.map((step, i) => (
+              <li key={step} className="flex items-center gap-2">
+                <span className="rounded-md border border-line px-2.5 py-1 font-mono text-xs text-muted">
+                  {step}
                 </span>
-              )}
-            </li>
-          ))}
-        </motion.ol>
+                {i < study.pipeline.length - 1 && (
+                  <span aria-hidden="true" style={{ color: "var(--accent)" }}>
+                    →
+                  </span>
+                )}
+              </li>
+            ))}
+          </motion.ol>
 
-        <motion.p {...rise} className="mb-5 max-w-3xl text-sm leading-relaxed text-muted">
-          {study.architecture.pipelineNote}
-        </motion.p>
+          <motion.p {...rise} className="mb-5 max-w-3xl text-sm leading-relaxed text-muted">
+            {study.architecture.pipelineNote}
+          </motion.p>
 
-        <motion.div
-          {...rise}
-          className="overflow-hidden rounded-2xl border border-line bg-surface"
-        >
-          <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent)" }} />
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent2)" }} />
-            <span className="ml-2 font-mono text-[11px] text-muted">marketing-os / architecture</span>
-          </div>
-          <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-relaxed text-muted sm:p-6">
-            {study.architecture.diagram}
-          </pre>
-        </motion.div>
-      </section>
+          <motion.div
+            {...rise}
+            className="overflow-hidden rounded-2xl border border-line bg-surface"
+          >
+            <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent)" }} />
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent2)" }} />
+              <span className="ml-2 font-mono text-[11px] text-muted">{study.name} / architecture</span>
+            </div>
+            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-relaxed text-muted sm:p-6">
+              {study.architecture.diagram}
+            </pre>
+          </motion.div>
+        </section>
+      )}
 
       {/* Hard problems */}
-      <section className="mx-auto max-w-content px-5 py-16">
-        <SectionHead eyebrow="Hard problems solved" title="What made it interesting." />
-        <div className="grid gap-5 md:grid-cols-2">
-          {study.hardProblems.map((item, i) => (
-            <motion.div
-              key={item.title}
-              {...rise}
-              transition={{ duration: 0.45, delay: (i % 2) * 0.06 }}
-              className="rounded-2xl border border-line bg-surface p-5"
-            >
-              <h3 className="font-display text-base font-700" style={{ color: "var(--accent)" }}>
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {study.hardProblems && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="Hard problems solved" title="What made it interesting." />
+          <div className="grid gap-5 md:grid-cols-2">
+            {study.hardProblems.map((item, i) => (
+              <motion.div
+                key={item.title}
+                {...rise}
+                transition={{ duration: 0.45, delay: (i % 2) * 0.06 }}
+                className="rounded-2xl border border-line bg-surface p-5"
+              >
+                <h3 className="font-display text-base font-700" style={{ color: "var(--accent)" }}>
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Impact */}
-      <section className="mx-auto max-w-content px-5 py-16">
-        <SectionHead eyebrow="Impact" title="Measured where it's measured." />
-        <ul className="space-y-3">
-          {study.impact.map((line, i) => (
-            <motion.li
-              key={line}
-              {...rise}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="flex gap-3 rounded-xl border border-line bg-surface p-4 text-sm leading-relaxed text-muted"
-            >
-              <span style={{ color: "var(--accent)" }}>▹</span>
-              <span>{line}</span>
-            </motion.li>
-          ))}
-        </ul>
-        <p className="mt-4 font-mono text-xs text-muted">Placeholders marked [X] — filled in from live telemetry.</p>
-      </section>
+      {/* What the agent fixes */}
+      {study.whatItFixes && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="What the agent fixes" title="The fixes, grouped." />
+          <div className="grid gap-5 md:grid-cols-2">
+            {study.whatItFixes.map((group, i) => (
+              <motion.div
+                key={group.title}
+                {...rise}
+                transition={{ duration: 0.45, delay: (i % 2) * 0.06 }}
+                className="rounded-2xl border border-line bg-surface p-5"
+              >
+                <h3 className="font-display text-base font-700" style={{ color: "var(--accent)" }}>
+                  {group.title}
+                </h3>
+                <ul className="mt-3 space-y-2">
+                  {group.items.map((it) => (
+                    <li key={it} className="flex gap-2 text-sm leading-relaxed text-muted">
+                      <span style={{ color: "var(--accent)" }}>▹</span>
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Safety and control */}
+      {study.safety && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="Safety and control" title="How it stays safe on live sites." />
+          <ul className="grid gap-3 md:grid-cols-3">
+            {study.safety.map((line, i) => (
+              <motion.li
+                key={line}
+                {...rise}
+                transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
+                className="rounded-xl border border-line bg-surface p-4 text-sm leading-relaxed text-muted"
+              >
+                {line}
+              </motion.li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Results / impact */}
+      {(study.results || study.impact) && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow={study.results ? "Results" : "Impact"} title="Measured where it's measured." />
+          <ul className="space-y-3">
+            {(study.results || study.impact).map((line, i) => (
+              <motion.li
+                key={line}
+                {...rise}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                className="flex gap-3 rounded-xl border border-line bg-surface p-4 text-sm leading-relaxed text-muted"
+              >
+                <span style={{ color: "var(--accent)" }}>▹</span>
+                <span>{line}</span>
+              </motion.li>
+            ))}
+          </ul>
+          <p className="mt-4 font-mono text-xs text-muted">Bracketed placeholders are filled in from live telemetry.</p>
+        </section>
+      )}
+
+      {/* What I learned */}
+      {study.learned && (
+        <section className="mx-auto max-w-content px-5 py-16">
+          <SectionHead eyebrow="What I learned" title="Notes from shipping it." />
+          <div className="max-w-3xl space-y-4">
+            {study.learned.map((para, i) => (
+              <motion.p
+                key={i}
+                {...rise}
+                transition={{ duration: 0.45, delay: i * 0.05 }}
+                className="text-[15px] leading-relaxed text-muted"
+              >
+                {para}
+              </motion.p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Stack */}
       <section className="mx-auto max-w-content px-5 py-16">
