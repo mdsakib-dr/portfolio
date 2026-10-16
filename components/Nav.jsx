@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { profile } from "@/lib/data";
 
+// Root-relative hashes so the same nav works on the homepage and on
+// case-study subpages (/work/<id>).
 const links = [
-  { href: "#work", label: "Work" },
-  { href: "#skills", label: "Skills" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#work", label: "Work" },
+  { href: "/#skills", label: "Skills" },
+  { href: "/#about", label: "About" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Nav() {
@@ -54,7 +56,7 @@ export default function Nav() {
     <header className="sticky top-0 z-50 border-b border-line bg-bg/70 backdrop-blur-md">
       <nav className="mx-auto flex max-w-content items-center justify-between gap-3 px-5 py-3">
         {/* Negative margin keeps the hit area comfortable without moving the mark */}
-        <a href="#top" className="-m-2 p-2 font-display text-sm font-700 tracking-tight">
+        <a href="/#top" className="-m-2 p-2 font-display text-sm font-700 tracking-tight">
           <span style={{ color: "var(--accent)" }}>MS</span>
           <span className="text-muted">/</span>
           <span>sakib</span>

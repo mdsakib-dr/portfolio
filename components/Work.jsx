@@ -56,6 +56,11 @@ function Card({ p, index }) {
       </ul>
 
       <div className="mt-5 flex gap-4 border-t border-line pt-4 text-sm font-600">
+        {p.caseStudy && (
+          <a href={`/work/${p.id}`} className="py-1 transition-colors hover:opacity-70" style={{ color: "var(--accent)" }}>
+            Case study →
+          </a>
+        )}
         {p.live && (
           <a href={p.live} target="_blank" rel="noreferrer" className="py-1 transition-colors hover:opacity-70" style={{ color: "var(--accent)" }}>
             Live ↗
@@ -66,7 +71,7 @@ function Card({ p, index }) {
             Code ↗
           </a>
         )}
-        {!p.live && !p.repo && (
+        {!p.caseStudy && !p.live && !p.repo && (
           <span className="text-muted">Internal — details on request</span>
         )}
       </div>
