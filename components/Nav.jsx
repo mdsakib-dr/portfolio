@@ -7,6 +7,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 // case-study subpages (/work/<id>).
 const links = [
   { href: "/#work", label: "Work" },
+  { href: "/#gallery", label: "Gallery" },
   { href: "/#skills", label: "Skills" },
   { href: "/#about", label: "About" },
   { href: "/#contact", label: "Contact" },

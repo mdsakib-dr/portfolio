@@ -2,6 +2,7 @@ import CursorTrail from "@/components/CursorTrail";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Work from "@/components/Work";
+import Gallery from "@/components/Gallery";
 import Skills from "@/components/Skills";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
@@ -12,6 +13,7 @@ export default function Page() {
       <Nav />
       <Hero />
       <Work />
+      <Gallery />
       <Skills />
       <About />
       <Contact />
