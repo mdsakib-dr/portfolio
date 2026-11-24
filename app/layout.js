@@ -14,8 +14,8 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#08080d",
-  colorScheme: "dark light",
+  themeColor: "#f7f6f2",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }) {
@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
               (function(){
                 var root = document.documentElement;
                 try {
-                  var t = localStorage.getItem('theme') || 'bold';
+                  var t = localStorage.getItem('theme') || 'minimal';
                   var themes = ${JSON.stringify({
                     bold: {
                       "--bg": "#08080d", "--surface": "#111118", "--surface-2": "#16161f",
@@ -68,9 +68,11 @@ export default function RootLayout({ children }) {
                       "--font-mono": "'JetBrains Mono', ui-monospace, monospace"
                     }
                   })};
-                  var vars = themes[t] || themes.bold;
+                  if (!themes[t]) t = 'minimal';
+                  var vars = themes[t] || themes.minimal;
                   Object.keys(vars).forEach(function(k){ root.style.setProperty(k, vars[k]); });
                   root.setAttribute('data-theme', t);
+                  root.style.colorScheme = t === 'minimal' ? 'light' : 'dark';
                 } catch(e){}
 
                 // Scroll reveals. The hidden state is applied before paint to

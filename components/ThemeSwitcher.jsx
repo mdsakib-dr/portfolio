@@ -10,8 +10,9 @@ export default function ThemeSwitcher() {
     const saved =
       (typeof window !== "undefined" && localStorage.getItem("theme")) ||
       DEFAULT_THEME;
-    setTheme(saved);
-    applyTheme(saved);
+    const resolved = THEMES[saved] ? saved : DEFAULT_THEME;
+    setTheme(resolved);
+    applyTheme(resolved);
   }, []);
 
   const choose = (key) => {

@@ -12,17 +12,17 @@
   /* Width of every section's content column (consumed by max-w-content). */
   --content-max: 1180px;
 
-  /* Defaults (bold theme) so there is no flash before JS runs. */
-  --bg: #08080d;
-  --surface: #111118;
-  --surface-2: #16161f;
-  --text: #f5f4f8;
-  --muted: #a3a2b8;
-  --accent: #9a80ff;
-  --accent-2: #5eead4;
-  --line: rgba(255, 255, 255, 0.09);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --accent-soft: rgba(154, 128, 255, 0.13);
+  /* Defaults (minimal theme) so there is no flash before JS runs. */
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-2: #f0eee8;
+  --text: #16151a;
+  --muted: #62606b;
+  --accent: #1b4fd8;
+  --accent-2: #0f766e;
+  --line: rgba(22, 21, 26, 0.12);
+  --line-strong: rgba(22, 21, 26, 0.2);
+  --accent-soft: rgba(27, 79, 216, 0.08);
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
@@ -71,8 +71,9 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-[data-theme="minimal"] body::after {
-  opacity: 0.018;
+[data-theme="bold"] body::after,
+[data-theme="terminal"] body::after {
+  opacity: 0.03;
 }
 
 /* A theme swap flips dozens of custom properties at once. Without this every
@@ -914,17 +915,24 @@ svg {
   position: absolute;
   border-radius: 9999px;
   filter: blur(90px);
-  opacity: 0.42;
+  opacity: 0.1;
   pointer-events: none;
   z-index: 0;
 }
 
-[data-theme="minimal"] .glow {
-  opacity: 0.1;
+[data-theme="bold"] .glow,
+[data-theme="terminal"] .glow {
+  opacity: 0.42;
 }
 
-[data-theme="minimal"] .on-dark-only {
+/* Ambient glows read as dirt on the light theme, so they are dark-only. */
+.on-dark-only {
   display: none;
+}
+
+[data-theme="bold"] .on-dark-only,
+[data-theme="terminal"] .on-dark-only {
+  display: block;
 }
 
 .grid-lines {
@@ -1067,11 +1075,12 @@ svg {
    ───────────────────────────────────────────────────────────── */
 
 .brand-icon {
-  fill: var(--brand-on-dark);
+  fill: var(--brand-on-light);
 }
 
-[data-theme="minimal"] .brand-icon {
-  fill: var(--brand-on-light);
+[data-theme="bold"] .brand-icon,
+[data-theme="terminal"] .brand-icon {
+  fill: var(--brand-on-dark);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1194,10 +1203,12 @@ svg {
   max-width: none;
   height: auto;
   user-select: none;
+  opacity: 0.82;
 }
 
-[data-theme="minimal"] .hero-portrait__img {
-  opacity: 0.82;
+[data-theme="bold"] .hero-portrait__img,
+[data-theme="terminal"] .hero-portrait__img {
+  opacity: 1;
 }
 
 @media (min-width: 1024px) {

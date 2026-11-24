@@ -41,7 +41,7 @@ Replace the placeholder file at `public/Md_Sakib_Resume.pdf` with your real PDF 
 
 ## Themes
 
-Defined in `lib/themes.js` as CSS-variable sets. The default is `bold`. To change the default, edit `DEFAULT_THEME` there **and** the fallback in `app/layout.js` (the inline script that prevents a flash on load).
+Defined in `lib/themes.js` as CSS-variable sets. The default is `minimal` (light). To change the default, edit `DEFAULT_THEME` there **and** the fallback in `app/layout.js` (the inline script that prevents a flash on load).
 
 ## Structure
 

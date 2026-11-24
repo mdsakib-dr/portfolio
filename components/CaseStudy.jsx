@@ -43,7 +43,7 @@ export default function CaseStudy({ study }) {
 
       <section className="relative overflow-hidden">
         <div className="glow on-dark-only" style={{ background: "var(--accent)", width: 360, height: 360, top: -100, left: -80 }} />
-        <div className="glow on-dark-only" style={{ background: "var(--accent2)", width: 300, height: 300, top: 20, right: -60 }} />
+        <div className="glow on-dark-only" style={{ background: "var(--accent-2)", width: 300, height: 300, top: 20, right: -60 }} />
 
         <div className="relative z-10 mx-auto max-w-content px-5 pb-16 pt-12 sm:pt-16">
           <motion.a
@@ -198,7 +198,7 @@ export default function CaseStudy({ study }) {
           >
             <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
               <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent)" }} />
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent2)" }} />
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent-2)" }} />
               <span className="ml-2 font-mono text-[11px] text-muted">{study.name} / architecture</span>
             </div>
             <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-relaxed text-muted sm:p-6">
