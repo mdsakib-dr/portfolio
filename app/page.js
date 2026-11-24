@@ -4,17 +4,19 @@ import Hero from "@/components/Hero";
 import Work from "@/components/Work";
 import Gallery from "@/components/Gallery";
 import Skills from "@/components/Skills";
+import Credentials from "@/components/Credentials";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 
 export default function Page() {
   return (
-    <main>
+    <main id="main">
       <Nav />
       <Hero />
       <Work />
       <Gallery />
       <Skills />
+      <Credentials />
       <About />
       <Contact />
       <CursorTrail />

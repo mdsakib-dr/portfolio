@@ -8,10 +8,12 @@ import CursorTrail from "./CursorTrail";
 import Nav from "./Nav";
 import SectionHead from "./SectionHead";
 
+// No initial hidden state: the content is readable before (and without) the
+// in-view animation, so a slow or failed hydration never blanks the page.
 const rise = {
-  initial: { opacity: 0, y: 18 },
+  initial: false,
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
+  viewport: { once: true, margin: "-40px" },
   transition: { duration: 0.45 },
 };
 
@@ -21,22 +23,22 @@ function Highlight({ item, index }) {
     <motion.div
       {...rise}
       transition={{ duration: 0.45, delay: (index % 3) * 0.05 }}
-      className="rounded-2xl border border-line bg-surface p-5"
+      className="card p-5"
     >
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-xs" style={{ color: "var(--accent)" }}>
           {String(index + 1).padStart(2, "0")}
         </span>
-        <h3 className="font-display text-base font-700">{item.title}</h3>
+        <h3 className="font-display text-base font-bold">{item.title}</h3>
       </div>
-      <p className="mt-3 text-sm leading-relaxed text-muted">{item.body}</p>
+      <p className="mt-3 body-copy--tight">{item.body}</p>
     </motion.div>
   );
 }
 
 export default function CaseStudy({ study }) {
   return (
-    <main>
+    <main id="main">
       <Nav />
 
       <section className="relative overflow-hidden">
@@ -57,7 +59,7 @@ export default function CaseStudy({ study }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 }}
-            className="term-prompt mt-8 font-mono text-xs uppercase tracking-[0.2em]"
+            className="term-prompt eyebrow mt-8"
             style={{ color: "var(--accent)" }}
           >
             {study.category} · {study.role}
@@ -67,7 +69,7 @@ export default function CaseStudy({ study }) {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-3 font-display text-[clamp(2rem,5.5vw,3.75rem)] font-700 leading-[1.05] tracking-tight"
+            className="mt-3 font-display text-[clamp(2.6rem,6vw,4.5rem)] font-bold leading-[1.02] tracking-[-0.045em]"
           >
             {study.name}
           </motion.h1>
@@ -76,7 +78,7 @@ export default function CaseStudy({ study }) {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="mt-5 max-w-3xl font-display text-[clamp(1.05rem,1.8vw,1.4rem)] leading-snug text-text"
+            className="hero-lede mt-5 max-w-3xl text-text"
           >
             {study.tagline}
           </motion.p>
@@ -89,14 +91,13 @@ export default function CaseStudy({ study }) {
           >
             <a
               href={`mailto:${profile.email}`}
-              className="rounded-full px-5 py-2.5 text-sm font-600 transition-transform hover:scale-[1.03]"
-              style={{ background: "var(--accent)", color: "var(--bg)" }}
+              className="btn btn-primary"
             >
               Talk about this project
             </a>
             <a
               href="/#work"
-              className="rounded-full border border-line px-5 py-2.5 text-sm font-600 text-muted transition-colors hover:text-text"
+              className="btn btn-ghost"
             >
               More work
             </a>
@@ -113,7 +114,7 @@ export default function CaseStudy({ study }) {
             {study.meta.map((m) => (
               <div key={m.label} className="bg-surface p-4 sm:p-5">
                 <dt className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">{m.label}</dt>
-                <dd className="mt-2 text-sm font-500 leading-snug">{m.value}</dd>
+                <dd className="mt-2 text-sm font-medium leading-snug">{m.value}</dd>
               </div>
             ))}
           </motion.dl>
@@ -126,19 +127,19 @@ export default function CaseStudy({ study }) {
           <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
               <SectionHead eyebrow="The problem" title={study.problemTitle || "The problem."} />
-              <motion.p {...rise} className="text-[15px] leading-relaxed text-muted">
+              <motion.p {...rise} className="body-copy">
                 {study.problem}
               </motion.p>
             </div>
-            <motion.div {...rise} className="rounded-2xl border border-line bg-surface p-5">
+            <motion.div {...rise} className="card p-5">
               <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-muted term-prompt">My role</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{study.myRole}</p>
+              <p className="mt-3 body-copy--tight">{study.myRole}</p>
             </motion.div>
           </div>
         ) : (
           <div>
             <SectionHead eyebrow="Problem" title={study.problemTitle || "The problem."} />
-            <motion.p {...rise} className="max-w-3xl text-[15px] leading-relaxed text-muted">
+            <motion.p {...rise} className="max-w-3xl body-copy">
               {study.problem}
             </motion.p>
           </div>
@@ -149,7 +150,7 @@ export default function CaseStudy({ study }) {
       {study.solution && (
         <section className="mx-auto max-w-content px-5 py-16">
           <SectionHead eyebrow="Solution" title="How it works." />
-          <motion.p {...rise} className="max-w-3xl text-[15px] leading-relaxed text-muted">
+          <motion.p {...rise} className="max-w-3xl body-copy">
             {study.solution}
           </motion.p>
         </section>
@@ -187,13 +188,13 @@ export default function CaseStudy({ study }) {
             ))}
           </motion.ol>
 
-          <motion.p {...rise} className="mb-5 max-w-3xl text-sm leading-relaxed text-muted">
+          <motion.p {...rise} className="mb-5 max-w-3xl body-copy--tight">
             {study.architecture.pipelineNote}
           </motion.p>
 
           <motion.div
             {...rise}
-            className="overflow-hidden rounded-2xl border border-line bg-surface"
+            className="overflow-hidden  card"
           >
             <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
               <span className="h-2.5 w-2.5 rounded-full" style={{ background: "var(--accent)" }} />
@@ -217,12 +218,12 @@ export default function CaseStudy({ study }) {
                 key={item.title}
                 {...rise}
                 transition={{ duration: 0.45, delay: (i % 2) * 0.06 }}
-                className="rounded-2xl border border-line bg-surface p-5"
+                className="card p-5"
               >
-                <h3 className="font-display text-base font-700" style={{ color: "var(--accent)" }}>
+                <h3 className="font-display text-base font-bold" style={{ color: "var(--accent)" }}>
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
+                <p className="mt-2 body-copy--tight">{item.body}</p>
               </motion.div>
             ))}
           </div>
@@ -239,14 +240,14 @@ export default function CaseStudy({ study }) {
                 key={group.title}
                 {...rise}
                 transition={{ duration: 0.45, delay: (i % 2) * 0.06 }}
-                className="rounded-2xl border border-line bg-surface p-5"
+                className="card p-5"
               >
-                <h3 className="font-display text-base font-700" style={{ color: "var(--accent)" }}>
+                <h3 className="font-display text-base font-bold" style={{ color: "var(--accent)" }}>
                   {group.title}
                 </h3>
                 <ul className="mt-3 space-y-2">
                   {group.items.map((it) => (
-                    <li key={it} className="flex gap-2 text-sm leading-relaxed text-muted">
+                    <li key={it} className="flex gap-2 body-copy--tight">
                       <span style={{ color: "var(--accent)" }}>▹</span>
                       <span>{it}</span>
                     </li>
@@ -268,7 +269,7 @@ export default function CaseStudy({ study }) {
                 key={line}
                 {...rise}
                 transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
-                className="rounded-xl border border-line bg-surface p-4 text-sm leading-relaxed text-muted"
+                className="card p-4 body-copy--tight"
               >
                 {line}
               </motion.li>
@@ -287,7 +288,7 @@ export default function CaseStudy({ study }) {
                 key={line}
                 {...rise}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="flex gap-3 rounded-xl border border-line bg-surface p-4 text-sm leading-relaxed text-muted"
+                className="flex gap-3 card p-4 body-copy--tight"
               >
                 <span style={{ color: "var(--accent)" }}>▹</span>
                 <span>{line}</span>
@@ -308,7 +309,7 @@ export default function CaseStudy({ study }) {
                 key={i}
                 {...rise}
                 transition={{ duration: 0.45, delay: i * 0.05 }}
-                className="text-[15px] leading-relaxed text-muted"
+                className="body-copy"
               >
                 {para}
               </motion.p>
@@ -324,10 +325,7 @@ export default function CaseStudy({ study }) {
           {study.stack.map((s) => {
             const icon = getBrandIcon(s);
             return (
-              <li
-                key={s}
-                className="inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5 font-mono text-[11px] leading-none text-muted"
-              >
+              <li key={s} className="chip">
                 {icon ? <BrandIcon icon={icon} size={13} /> : null}
                 <span>{s}</span>
               </li>
@@ -341,25 +339,31 @@ export default function CaseStudy({ study }) {
         <div className="glow on-dark-only" style={{ background: "var(--accent)", width: 340, height: 340, bottom: -120, left: "40%" }} />
         <div className="relative z-10 mx-auto max-w-content px-5 py-24">
           <SectionHead eyebrow="Next" title="Want the full walkthrough?" />
-          <motion.p {...rise} className="max-w-xl text-[15px] leading-relaxed text-muted">
+          <motion.p {...rise} className="max-w-xl body-copy">
             I can walk through the orchestration layer, the MCP approval bridge, or the
             anti-duplication design in detail. The fastest way to reach me is email.
           </motion.p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={`mailto:${profile.email}`}
-              className="rounded-full px-5 py-2.5 text-sm font-600 transition-transform hover:scale-[1.03]"
-              style={{ background: "var(--accent)", color: "var(--bg)" }}
-            >
+            <a href={`mailto:${profile.email}`} className="btn btn-primary">
               {profile.email}
             </a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-600 text-text transition-colors hover:border-text">
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-ghost"
+            >
               <BrandIcon icon={getBrandIcon("LinkedIn")} size={15} />
-              LinkedIn ↗
+              LinkedIn <span aria-hidden="true">↗</span>
             </a>
-            <a href={profile.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-600 text-muted transition-colors hover:text-text">
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-ghost"
+            >
               <BrandIcon icon={getBrandIcon("GitHub")} size={15} />
-              GitHub ↗
+              GitHub <span aria-hidden="true">↗</span>
             </a>
           </div>
 

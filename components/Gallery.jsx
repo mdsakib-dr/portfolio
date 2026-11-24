@@ -1,58 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { workflows } from "@/lib/data";
 import SectionHead from "./SectionHead";
 
-/** Full-size view of one workflow screenshot. */
+/** Full-size view of one workflow screenshot, as a native modal dialog. */
 function Lightbox({ item, onClose }) {
+  const dialogRef = useRef(null);
+  const closeRef = useRef(onClose);
+
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
-    };
+    closeRef.current = onClose;
   }, [onClose]);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    // Guard: Strict Mode re-runs this effect, and showModal() throws on an
+    // already-open dialog. Never close in cleanup — that fires a native close
+    // event which would immediately clear the parent state.
+    if (!dialog.open) dialog.showModal();
+
+    const handleClose = () => closeRef.current();
+    dialog.addEventListener("close", handleClose);
+    return () => dialog.removeEventListener("close", handleClose);
+  }, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={item.title}
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm sm:p-8"
+    <dialog
+      ref={dialogRef}
+      className="lightbox"
+      aria-labelledby="lightbox-title"
+      onClick={(e) => {
+        // A click on the dialog itself is a click on the backdrop.
+        if (e.target === dialogRef.current) dialogRef.current.close();
+      }}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 12, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 12, scale: 0.98 }}
-        transition={{ duration: 0.22 }}
-        onClick={(e) => e.stopPropagation()}
-        className="max-h-full w-full max-w-6xl overflow-y-auto rounded-2xl border border-line bg-surface"
-      >
+      <div className="lightbox-panel">
         <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
           <div>
-            <h3 className="font-display text-lg font-700">{item.title}</h3>
-            <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted">{item.description}</p>
+            <h3 id="lightbox-title" className="font-display text-lg font-semibold">
+              {item.title}
+            </h3>
+            <p className="body-copy--tight mt-1 max-w-3xl">{item.description}</p>
           </div>
           <button
             type="button"
-            onClick={onClose}
-            autoFocus
+            onClick={() => dialogRef.current.close()}
             aria-label="Close workflow preview"
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-muted transition-colors hover:text-text"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line text-muted transition-colors hover:text-text"
           >
             <svg
               viewBox="0 0 24 24"
@@ -70,66 +67,91 @@ function Lightbox({ item, onClose }) {
             </svg>
           </button>
         </div>
-        <div className="bg-white p-2 sm:p-4">
+
+        <div className="shot-body">
           <img
             src={item.image}
-            alt={`${item.title} n8n workflow`}
-            className="h-auto w-full rounded-lg"
+            alt={` n8n workflow`}
+            width={item.imageWidth}
+            height={item.imageHeight}
+            className="img-outline h-auto w-full rounded-lg"
           />
         </div>
-      </motion.div>
-    </motion.div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3">
+          <span className="font-mono text-[11px] text-muted">
+            {item.stack.join(" · ")}
+          </span>
+          <a
+            href={item.image}
+            target="_blank"
+            rel="noreferrer"
+            className="link-underline text-sm font-semibold"
+          >
+            Open image <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </dialog>
   );
 }
 
-function Card({ item, index, onOpen }) {
+function WorkflowRow({ item, index, onOpen }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: (index % 2) * 0.06 }}
-      className="group flex flex-col rounded-2xl border border-line bg-surface p-3 transition-colors"
+    <div
+      className="grid items-center gap-6 lg:grid-cols-[1.35fr_0.65fr]"
+      data-reveal
+      style={{ "--reveal-delay": `${index * 60}ms` }}
     >
       <button
         type="button"
         onClick={onOpen}
-        aria-label={`Open ${item.title} workflow`}
-        className="overflow-hidden rounded-xl border border-line bg-white"
+        aria-label={`Open ${item.title} workflow full size`}
+        className="shot-frame block w-full text-left"
       >
-        <img
-          src={item.image}
-          alt={`${item.title} n8n workflow`}
-          loading="lazy"
-          className="aspect-[16/9] w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-        />
+        <span className="shot-bar" aria-hidden="true">
+          <span className="shot-dot" />
+          <span className="shot-dot" />
+          <span className="shot-dot" />
+          <span className="shot-url">n8n / {item.id}</span>
+          <span className="shot-url" style={{ marginInlineStart: "auto" }}>
+            ↗
+          </span>
+        </span>
+        <span className="shot-body block">
+          <img
+            src={item.image}
+            alt=""
+            width={item.imageWidth}
+            height={item.imageHeight}
+            loading="lazy"
+            className="img-outline h-auto w-full rounded-lg"
+          />
+        </span>
       </button>
 
-      <div className="flex flex-1 flex-col px-2 pb-1 pt-4">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-lg font-700 tracking-tight">{item.title}</h3>
-          <button
-            type="button"
-            onClick={onOpen}
-            className="shrink-0 py-1 font-mono text-[11px] uppercase tracking-wider transition-colors hover:opacity-70"
-            style={{ color: "var(--accent)" }}
-          >
-            View ↗
-          </button>
-        </div>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{item.description}</p>
+      <div>
+        <p className="eyebrow" style={{ color: "var(--accent)" }}>
+          Workflow {String(index + 1).padStart(2, "0")}
+        </p>
+        <h3 className="h-card mt-3 text-[1.3rem]">{item.title}</h3>
+        <p className="body-copy--tight mt-3">{item.description}</p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {item.stack.map((s) => (
-            <li
-              key={s}
-              className="rounded-md border border-line px-2 py-1 font-mono text-[11px] leading-none text-muted"
-            >
+            <li key={s} className="chip">
               {s}
             </li>
           ))}
         </ul>
+        <button
+          type="button"
+          onClick={onOpen}
+          className="link-underline mt-5 text-sm font-semibold"
+        >
+          Open full size <span aria-hidden="true">↗</span>
+        </button>
       </div>
-    </motion.article>
+    </div>
   );
 }
 
@@ -138,17 +160,26 @@ export default function Gallery() {
 
   return (
     <section className="mx-auto max-w-content px-5 py-20">
-      <SectionHead id="gallery" eyebrow="Automation gallery" title="n8n workflows, end to end." />
+      <SectionHead
+        id="gallery"
+        index="02"
+        eyebrow="Automation gallery"
+        title="Workflows, end to end."
+        description="Real n8n builds — the joins, retries, dedup and delivery, not a diagram of them."
+      />
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="space-y-10">
         {workflows.map((item, i) => (
-          <Card key={item.id} item={item} index={i} onOpen={() => setActive(item)} />
+          <WorkflowRow
+            key={item.id}
+            item={item}
+            index={i}
+            onOpen={() => setActive(item)}
+          />
         ))}
       </div>
 
-      <AnimatePresence>
-        {active && <Lightbox item={active} onClose={() => setActive(null)} />}
-      </AnimatePresence>
+      {active ? <Lightbox item={active} onClose={() => setActive(null)} /> : null}
     </section>
   );
 }

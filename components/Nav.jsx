@@ -9,6 +9,7 @@ const links = [
   { href: "/#work", label: "Work" },
   { href: "/#gallery", label: "Gallery" },
   { href: "/#skills", label: "Skills" },
+  { href: "/#credentials", label: "Credentials" },
   { href: "/#about", label: "About" },
   { href: "/#contact", label: "Contact" },
 ];
@@ -17,8 +18,11 @@ export default function Nav() {
   // Below md the link row collapses, so without this panel the whole site is
   // unreachable on a phone except by scrolling.
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
   const panelRef = useRef(null);
   const buttonRef = useRef(null);
+  const frame = useRef(0);
 
   useEffect(() => {
     if (!open) return;
@@ -52,23 +56,51 @@ export default function Nav() {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
+  // One rAF-throttled scroll listener drives both the hairline progress bar
+  // and the subtle border the header gains once the page moves.
+  useEffect(() => {
+    const update = () => {
+      frame.current = 0;
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrolled(y > 8);
+      setProgress(max > 0 ? Math.min(1, y / max) : 0);
+    };
+    const onScroll = () => {
+      if (!frame.current) frame.current = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      if (frame.current) cancelAnimationFrame(frame.current);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-bg/70 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-content items-center justify-between gap-3 px-5 py-3">
-        {/* Negative margin keeps the hit area comfortable without moving the mark */}
-        <a href="/#top" className="-m-2 p-2 font-display text-sm font-700 tracking-tight">
-          <span style={{ color: "var(--accent)" }}>MS</span>
-          <span className="text-muted">/</span>
-          <span>sakib</span>
+    <header
+      className="nav-shell relative sticky top-0 z-50 backdrop-blur-xl"
+      data-scrolled={scrolled}
+    >
+      <nav className="mx-auto flex max-w-content items-center justify-between gap-3 px-5 py-2.5">
+        <a href="/#top" className="-m-2 flex items-center gap-2.5 p-2">
+          <span
+            className="grid h-8 w-8 place-items-center rounded-lg font-display text-[11px] font-bold tracking-tight"
+            style={{ background: "var(--accent)", color: "var(--bg)" }}
+            aria-hidden="true"
+          >
+            MS
+          </span>
+          <span className="font-display text-sm font-semibold tracking-tight">
+            sakib<span style={{ color: "var(--accent)" }}>.</span>
+          </span>
         </a>
 
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-5 md:flex lg:gap-7">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="py-1 text-sm text-muted transition-colors hover:text-text"
-            >
+            <a key={l.href} href={l.href} className="nav-link">
               {l.label}
             </a>
           ))}
@@ -84,7 +116,7 @@ export default function Nav() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="grid h-9 w-9 place-items-center rounded-full border border-line text-muted transition-colors hover:text-text md:hidden"
+            className="grid h-10 w-10 place-items-center rounded-full border border-line text-muted transition-colors hover:text-text md:hidden"
           >
             <svg
               viewBox="0 0 24 24"
@@ -120,7 +152,8 @@ export default function Nav() {
         <div
           id="mobile-nav"
           ref={panelRef}
-          className="border-t border-line bg-bg/95 backdrop-blur-md md:hidden"
+          className="border-t border-line md:hidden"
+          style={{ background: "color-mix(in srgb, var(--bg) 96%, transparent)" }}
         >
           <ul className="mx-auto max-w-content px-5 py-2">
             {links.map((l) => (
@@ -128,15 +161,24 @@ export default function Nav() {
                 <a
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block border-b border-line py-3 text-sm text-muted transition-colors hover:text-text"
+                  className="flex items-center justify-between border-b border-line py-3.5 text-sm text-muted transition-colors hover:text-text"
                 >
                   {l.label}
+                  <span aria-hidden="true" style={{ color: "var(--accent)" }}>
+                    →
+                  </span>
                 </a>
               </li>
             ))}
           </ul>
         </div>
       )}
+
+      <span
+        className="nav-progress"
+        style={{ transform: `scaleX(${progress})` }}
+        aria-hidden="true"
+      />
     </header>
   );
 }

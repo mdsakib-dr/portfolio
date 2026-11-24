@@ -15,18 +15,26 @@ export default function ThemeSwitcher() {
   }, []);
 
   const choose = (key) => {
+    const root = document.documentElement;
+    root.classList.add("theme-switching");
     setTheme(key);
     applyTheme(key);
     try {
       localStorage.setItem("theme", key);
     } catch (e) {}
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => root.classList.remove("theme-switching"));
+    });
   };
 
   return (
     <div
       role="group"
       aria-label="Theme"
-      className="flex items-center gap-1 rounded-full border border-line bg-surface/70 p-1 backdrop-blur"
+      className="flex items-center gap-0.5 rounded-full border border-line p-1 backdrop-blur"
+      style={{
+        background: "color-mix(in srgb, var(--surface) 70%, transparent)",
+      }}
     >
       {THEME_ORDER.map((key) => {
         const active = theme === key;
@@ -34,13 +42,12 @@ export default function ThemeSwitcher() {
         return (
           <button
             key={key}
+            type="button"
             onClick={() => choose(key)}
             aria-pressed={active}
-            // The glyph is decorative, so the name has to live on the button
-            // itself — otherwise the control is unlabelled once the text is gone.
-            aria-label={label}
+            aria-label={`${label} theme`}
             title={`${label} — ${hint}`}
-            className="relative grid h-8 w-8 place-items-center rounded-full transition-colors"
+            className="relative grid h-9 w-9 place-items-center rounded-full transition-colors duration-200"
             style={{
               color: active ? "var(--bg)" : "var(--muted)",
               background: active ? "var(--accent)" : "transparent",

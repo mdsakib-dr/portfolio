@@ -27,7 +27,13 @@ vercel
 ## Edit your content
 
 **Everything lives in one file: `lib/data.js`.**
-Change your tagline, about text, projects, skills, experience, and education there — no need to touch components.
+Change your tagline, about text, projects, skills, credentials, experience, and education there — no need to touch components.
+
+## Certificates
+
+Drop the image and PDF into `public/certificates/`, then add an entry to the exported
+`credentials` array in `lib/data.js`. The Credentials section renders the preview,
+a full-size viewer, and a download link automatically.
 
 ## Swap in your résumé
 

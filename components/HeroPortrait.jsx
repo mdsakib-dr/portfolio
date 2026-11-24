@@ -31,7 +31,7 @@ export default function HeroPortrait() {
   const reduceMotion = useReducedMotion();
   const imgRef = useRef(null);
 
-  // "loading" → "ready" once the file decodes, "missing" if public/profile.png
+  // "loading" → "ready" once the file decodes, "missing" if the source is absent.
   // isn't there yet — that unmounts the whole thing, so there is never a broken
   // image glyph or an orphaned block of accent colour.
   const [status, setStatus] = useState("loading");
@@ -52,7 +52,7 @@ export default function HeroPortrait() {
       className="hero-portrait"
       initial={{ opacity: 0 }}
       animate={{ opacity: status === "ready" ? 1 : 0 }}
-      transition={{ duration: reduceMotion ? 0 : 0.9, ease: "easeOut" }}
+      transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
     >
       {/* Zero-size SVG: present in the document, paints nothing itself. */}
       <svg className="hero-portrait__defs" aria-hidden="true" focusable="false">
@@ -115,6 +115,7 @@ export default function HeroPortrait() {
         aria-hidden="true"
         draggable="false"
         decoding="async"
+        fetchPriority="high"
         onLoad={() => setStatus("ready")}
         onError={() => setStatus("missing")}
         className="hero-portrait__img"

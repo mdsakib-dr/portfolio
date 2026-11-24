@@ -1,92 +1,108 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { profile, experience, education, activities } from "@/lib/data";
 import SectionHead from "./SectionHead";
 
 export default function About() {
   return (
     <section className="mx-auto max-w-content px-5 py-20">
-      <SectionHead id="about" eyebrow="About" title="Who's behind the work." />
+      <SectionHead
+        id="about"
+        index="05"
+        eyebrow="About"
+        title="The engineer behind the work."
+        description="A bias for systems that keep running after the demo."
+      />
 
-      <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr]">
-        {/* Bio */}
-        <div className="space-y-4">
-          {profile.about.map((para, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.45, delay: i * 0.05 }}
-              className="text-[15px] leading-relaxed text-muted"
-            >
-              {para}
-            </motion.p>
-          ))}
-
-          {/* Experience */}
-          <div className="pt-4">
-            {experience.map((e) => (
-              <div key={e.company} className="rounded-2xl border border-line bg-surface p-5">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <h3 className="font-display text-base font-700">{e.company}</h3>
-                  <span className="font-mono text-xs text-muted">{e.location}</span>
-                </div>
-                <div className="mt-3 space-y-4">
-                  {e.positions.map((p, i) => (
-                    <div key={p.role} className={i > 0 ? "border-t border-line pt-4" : ""}>
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <p className="text-sm font-600" style={{ color: "var(--accent)" }}>
-                          {p.role}
-                        </p>
-                        <span className="font-mono text-xs text-muted">{p.period}</span>
-                      </div>
-                      <ul className="mt-2 space-y-2">
-                        {p.points.map((pt, i) => (
-                          <li key={i} className="flex gap-2 text-sm leading-relaxed text-muted">
-                            <span style={{ color: "var(--accent)" }}>▹</span>
-                            <span>{pt}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+        <div>
+          <div className="space-y-4" data-reveal>
+            {profile.about.map((para, i) => (
+              <p key={i} className="body-copy">
+                {para}
+              </p>
             ))}
+          </div>
+
+          <div className="mt-12">
+            <div className="mb-6 flex items-center gap-4" data-reveal>
+              <p className="eyebrow" style={{ color: "var(--text)" }}>
+                Experience
+              </p>
+              <span className="section-rule" aria-hidden="true" />
+            </div>
+
+            <div className="timeline" data-reveal>
+              {experience.map((e) => (
+                <div key={e.company} className="timeline-item">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 className="h-card">{e.company}</h3>
+                    <span className="font-mono text-xs text-muted tnum">{e.location}</span>
+                  </div>
+
+                  <div className="mt-4 space-y-5">
+                    {e.positions.map((p) => (
+                      <div key={p.role}>
+                        <div className="flex flex-wrap items-baseline justify-between gap-2">
+                          <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                            {p.role}
+                          </p>
+                          <span className="font-mono text-xs text-muted tnum">{p.period}</span>
+                        </div>
+                        <ul className="mt-2 space-y-2">
+                          {p.points.map((pt, j) => (
+                            <li key={j} className="body-copy--tight flex gap-2">
+                              <span style={{ color: "var(--accent)" }} aria-hidden="true">
+                                ▹
+                              </span>
+                              <span>{pt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Education / achievements */}
-        <div className="space-y-5">
-          <div className="rounded-2xl border border-line bg-surface p-5">
-            <h3 className="font-display text-base font-700">{education.school}</h3>
-            <p className="mt-0.5 text-sm text-muted">{education.degree}</p>
-            <p className="mt-1 font-mono text-xs text-muted">{education.period}</p>
-            <ul className="mt-3 flex flex-wrap gap-1.5">
+        <aside className="space-y-5">
+          <div className="card p-6" data-reveal>
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>
+              Education
+            </p>
+            <h3 className="h-card mt-3 text-[1.05rem]">{education.school}</h3>
+            <p className="body-copy--tight mt-1">{education.degree}</p>
+            <p className="mt-2 font-mono text-xs text-muted tnum">{education.period}</p>
+            <ul className="mt-4 flex flex-wrap gap-1.5">
               {education.notes.map((n) => (
-                <li key={n} className="rounded-md border border-line px-2 py-0.5 font-mono text-[11px]" style={{ color: "var(--accent)" }}>
+                <li
+                  key={n}
+                  className="chip"
+                  style={{ color: "var(--accent)", borderColor: "var(--accent-soft)" }}
+                >
                   {n}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-line bg-surface p-5">
-            <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-muted term-prompt">
-              Activities
-            </h3>
+          <div className="card p-6" data-reveal style={{ "--reveal-delay": "70ms" }}>
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>
+              Activities &amp; recognition
+            </p>
             <div className="mt-4 space-y-5">
               {activities.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-sm font-600" style={{ color: "var(--accent)" }}>
+                  <h4 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
                     {group.group}
                   </h4>
                   <ul className="mt-2 space-y-1.5">
                     {group.items.map((a) => (
-                      <li key={a} className="flex gap-2 text-sm leading-relaxed text-muted">
-                        <span style={{ color: "var(--accent)" }}>▹</span>
+                      <li key={a} className="body-copy--tight flex gap-2 text-[0.875rem]">
+                        <span style={{ color: "var(--accent)" }} aria-hidden="true">
+                          ▹
+                        </span>
                         <span>{a}</span>
                       </li>
                     ))}
@@ -95,7 +111,23 @@ export default function About() {
               ))}
             </div>
           </div>
-        </div>
+
+          <div className="card p-6" data-reveal style={{ "--reveal-delay": "140ms" }}>
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>
+              Based in
+            </p>
+            <p className="mt-3 text-sm font-medium">{profile.location}</p>
+            <p className="body-copy--tight mt-1 text-[0.875rem]">
+              Remote-friendly, GMT+6. Open to AI, automation and product engineering roles.
+            </p>
+            <a
+              href={`mailto:${profile.email}`}
+              className="link-underline mt-4 text-sm font-semibold"
+            >
+              Start a conversation <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </aside>
       </div>
     </section>
   );
